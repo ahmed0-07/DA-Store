@@ -7,7 +7,11 @@ export const createToken = (id: string) => {
   return token
 }
 
-export const verifyToken = (token: string): IToken => {
-  const decoded = jwt.verify(token, env.JWT_SECRET!) as IToken
-  return decoded
+export const verifyToken = (token: string): IToken | null => {
+  try {
+    const decoded = jwt.verify(token, env.JWT_SECRET!) as IToken
+    return decoded
+  } catch (err) {
+    return null
+  }
 }
