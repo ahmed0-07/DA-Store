@@ -6,7 +6,7 @@ import env from "./dotenv.js"
 const google = new googleStrategy({
   clientID: env.GOOGLE_CLIENT_ID,
   clientSecret: env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/auth/google/callback",
+  callbackURL: "http://localhost:3000/api/v1/auth/google/callback",
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await prisma.user.findUnique({

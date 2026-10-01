@@ -8,3 +8,11 @@ export interface IUser {
   role: UserRole
   createdAt: Date
 }
+
+export interface IAddressBody {
+  city: string,
+  state: string,
+  country: string,
+  isDefault: boolean,
+  streetAddress: string
+}
