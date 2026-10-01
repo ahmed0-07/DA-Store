@@ -4,8 +4,8 @@ import prisma from "../../lib/db.js";
 import env from "./dotenv.js"
 
 const google = new googleStrategy({
-  clientID: env.GOOGLE_CLIENT_ID!,
-  clientSecret: env.GOOGLE_CLIENT_SECRET!,
+  clientID: env.GOOGLE_CLIENT_ID,
+  clientSecret: env.GOOGLE_CLIENT_SECRET,
   callbackURL: "http://localhost:3000/auth/google/callback",
 }, async (accessToken, refreshToken, profile, done) => {
   try {
@@ -18,7 +18,7 @@ const google = new googleStrategy({
     if (!user) {
       user = await prisma.user.create({
         data: {
-          googleId: profile.id!,
+          googleId: profile.id,
           avatarUrl: profile.photos![0]?.value as string,
           email: profile._json.email as string,
           name: profile._json.name as string,

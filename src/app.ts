@@ -9,6 +9,6 @@ if (env.NODE_ENV == "development") {
   app.use(morgan('dev'))
 }
 
-app.use('/auth', authRouter)
+app.use('api/v1/auth', authRouter)
 
 export default app
