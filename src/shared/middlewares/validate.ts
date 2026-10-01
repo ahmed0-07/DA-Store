@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { type NextFunction, type Request, type Response } from 'express'
+import APIError from '../utils/APIError.js'
 
 export const validate = (schema: z.ZodType) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -9,11 +10,7 @@ export const validate = (schema: z.ZodType) => {
     })
 
     if (!result.success) {
-      // handle error - todo
-      return res.status(500).json({
-        message: "Failed",
-        error: result.error
-      })
+      throw new APIError("Invalid input data. Please check your request.", 400)
     }
 
     next()

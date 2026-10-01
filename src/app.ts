@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import authRouter from './modules/Auth/Auth.Routes.js'
 import userRouter from './modules/User/User.Routes.js'
 import env from './shared/config/dotenv.js'
+import { globalErrorHandler, notFound } from './shared/middlewares/globalError.js'
 
 const app = express()
 
@@ -14,5 +15,8 @@ app.use(express.json())
 
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', userRouter)
+
+app.all("/*splat", notFound)
+app.use(globalErrorHandler)
 
 export default app

@@ -28,7 +28,6 @@ const google = new googleStrategy({
 
     done(null, user)
   } catch (err) {
-    //global error - todo
     done(err)
   }
 })

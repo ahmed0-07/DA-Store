@@ -6,7 +6,7 @@ export const getAddresses = async (req: Request, res: Response) => {
   const data = await userService.findUserAddresses(id)
 
   res.status(200).json({
-    status: "Sucess",
+    status: "Success",
     data: data
   })
 }
