@@ -11,12 +11,12 @@ import { isAuthenticated } from '../../shared/middlewares/isAuthenticated.js'
 
 const router = express.Router()
 
-router.get('/addresses', isAuthenticated, getAddresses)
+router.get('/addresses', isAuthenticated(), getAddresses)
 
-router.post('/addresses', isAuthenticated, validate(addressBodySchema), addAddress)
+router.post('/addresses', isAuthenticated(), validate(addressBodySchema), addAddress)
 
-router.put('/addresses/:id', isAuthenticated, validate(updateAddressSchema), updateAddress)
+router.put('/addresses/:id', isAuthenticated(), validate(updateAddressSchema), updateAddress)
 
-router.delete('/addresses/:id', isAuthenticated, validate(addressIdSchema), deleteAddress)
+router.delete('/addresses/:id', isAuthenticated(), validate(addressIdSchema), deleteAddress)
 
 export default router
