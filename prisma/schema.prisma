@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -77,32 +78,17 @@ model Product {
   description   String?  @db.Text
   price         Decimal  @db.Decimal(10, 2)
   stockQuantity Int      @default(0) @map("stock_quantity")
+  imageUrl      String?  @map("image_url") @db.Text // Single product photo
   isActive      Boolean  @default(true) @map("is_active")
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
-  category   Category?   @relation(fields: [categoryId], references: [id])
+  category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   cartItems  CartItem[]
   orderItems OrderItem[]
-  images ProductImage[]
 
   @@index([categoryId])
   @@map("products")
-}
-
-model ProductImage {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId    String   @map("product_id") @db.Uuid
-  url          String   @db.Text
-  altText      String?  @map("alt_text") @db.VarChar(255)
-  displayOrder Int      @default(0) @map("display_order")
-  isPrimary    Boolean  @default(false) @map("is_primary")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@map("product_images")
 }
 
 model Cart {
@@ -132,17 +118,22 @@ model CartItem {
 }
 
 model Order {
-  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId          String?     @map("user_id") @db.Uuid
-  status          OrderStatus @default(pending)
-  totalAmount     Decimal     @map("total_amount") @db.Decimal(10, 2)
-  shippingAddress Json        @map("shipping_address") @db.JsonB
-  idempotencyKey  String?     @unique @map("idempotency_key") @db.VarChar(255)
-  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String?       @map("user_id") @db.Uuid
+  status          OrderStatus   @default(pending)
+  totalAmount     Decimal       @map("total_amount") @db.Decimal(10, 2)
+  shippingAddress Json          @map("shipping_address") @db.JsonB
+  
+  // Inlined payment tracking (replaces separate Payment table)
+  paymentProvider String?       @map("payment_provider") @db.VarChar(50)
+  paymentStatus   PaymentStatus @default(pending) @map("payment_status")
+  transactionId   String?       @unique @map("transaction_id") @db.VarChar(255)
 
-  user       User?       @relation(fields: [userId], references: [id])
+  idempotencyKey  String?       @unique @map("idempotency_key") @db.VarChar(255)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   orderItems OrderItem[]
-  payments   Payment[]
 
   @@index([userId])
   @@map("orders")
@@ -160,18 +151,4 @@ model OrderItem {
   product Product? @relation(fields: [productId], references: [id])
 
   @@map("order_items")
-}
-
-model Payment {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderId       String        @map("order_id") @db.Uuid
-  provider      String        @db.VarChar(50)
-  transactionId String        @unique @map("transaction_id") @db.VarChar(255)
-  status        PaymentStatus @default(pending)
-  amount        Decimal       @db.Decimal(10, 2)
-  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@map("payments")
 }
