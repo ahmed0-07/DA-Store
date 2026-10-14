@@ -9,6 +9,7 @@ export const productSchema = z.object({
     price: z.coerce.number().positive(),
     stockQuantity: z.coerce.number().int().min(0).optional(),
     categoryId: z.string().nonempty().optional(),
+    imageUrl: z.string().url().optional(),
     isActive: z.boolean().optional()
   })
 })
@@ -25,19 +26,9 @@ export const productSlugParams = z.object({
   })
 })
 
-export const productImageSchema = z.object({
+export const productImageUrlSchema = z.object({
   body: z.object({
-    url: z.string().nonempty(),
-    altText: z.string().optional(),
-    displayOrder: z.coerce.number().int().min(0).optional(),
-    isPrimary: z.boolean().optional()
-  })
-})
-
-export const productImageIdParams = z.object({
-  params: z.object({
-    id: z.string().nonempty(),
-    imageId: z.string().nonempty()
+    imageUrl: z.string().url()
   })
 })
 
@@ -50,6 +41,7 @@ export const updateProductSchema = z.object({
     price: z.coerce.number().positive().optional(),
     stockQuantity: z.coerce.number().int().min(0).optional(),
     categoryId: z.string().nonempty().optional(),
+    imageUrl: z.string().url().nullish(),
     isActive: z.boolean().optional()
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined))

@@ -1,8 +1,6 @@
-import { ca } from "zod/v4/locales";
 import prisma from "../../lib/db.js";
 import APIError from "../../shared/utils/APIError.js";
 import type { AddItemBody, ICartResult } from "./Cart.Interface.js";
-import app from "../../app.js";
 
 const resolveCart = async (userId: string | undefined, sessionToken: string | undefined): Promise<ICartResult> => {
   if (userId) {
@@ -11,11 +9,7 @@ const resolveCart = async (userId: string | undefined, sessionToken: string | un
         include: {
           cartItems: {
             include: {
-              product: {
-                include: {
-                  images: { where: { isPrimary: true } },
-                },
-              },
+              product: true,
             },
           },
         },
@@ -27,9 +21,7 @@ const resolveCart = async (userId: string | undefined, sessionToken: string | un
             include: {
               cartItems: {
                 include: {
-                  product: {
-                    include: { images: { where: { isPrimary: true } } },
-                  },
+                  product: true,
                 },
               },
             },
@@ -45,11 +37,7 @@ const resolveCart = async (userId: string | undefined, sessionToken: string | un
         include: {
           cartItems: {
             include: {
-              product: {
-                include: {
-                  images: { where: { isPrimary: true } },
-                },
-              },
+              product: true,
             },
           },
         },
@@ -66,11 +54,7 @@ const resolveCart = async (userId: string | undefined, sessionToken: string | un
       include: {
         cartItems: {
           include: {
-            product: {
-              include: {
-                images: { where: { isPrimary: true } },
-              },
-            },
+            product: true,
           },
         },
       },
@@ -132,13 +116,7 @@ class cartService {
         include: {
           cartItems: {
             include: {
-              product: {
-                include: {
-                  images: {
-                    where: { isPrimary: true },
-                  },
-                },
-              },
+              product: true,
             },
           },
         },
@@ -168,13 +146,7 @@ class cartService {
       include: {
         cartItems: {
           include: {
-            product: {
-              include: {
-                images: {
-                  where: { isPrimary: true },
-                },
-              },
-            },
+            product: true,
           },
         },
       },
@@ -227,11 +199,7 @@ class cartService {
         include: {
           cartItems: {
             include: {
-              product: {
-                include: {
-                  images: { where: { isPrimary: true } },
-                },
-              },
+              product: true,
             },
             orderBy: { id: 'asc' },
           },

@@ -1,6 +1,6 @@
 import prisma from "../../lib/db.js";
 import APIError from "../../shared/utils/APIError.js";
-import type { IProduct, IProductImage } from "./Product.Interface.js";
+import type { IProduct, IProductImageBody } from "./Product.Interface.js";
 
 class productService {
   findProducts = async () => {
@@ -17,13 +17,6 @@ class productService {
       where: {
         slug: slug,
         isActive: true
-      },
-      include: {
-        images: {
-          orderBy: {
-            displayOrder: 'asc'
-          }
-        }
       }
     })
 
@@ -44,6 +37,7 @@ class productService {
         price: body.price,
         stockQuantity: body.stockQuantity,
         categoryId: body.categoryId,
+        imageUrl: body.imageUrl,
         isActive: body.isActive
       }
     })
@@ -64,7 +58,8 @@ class productService {
         price: body.price,
         stockQuantity: body.stockQuantity,
         categoryId: body.categoryId,
-        isActive: body.isActive
+        imageUrl: body.imageUrl,
+        isActive: body.isActive,
       }
     })
 
@@ -84,7 +79,7 @@ class productService {
     return data
   }
 
-  addProductImage = async (productId: string, body: IProductImage) => {
+  setProductImage = async (productId: string, body: IProductImageBody) => {
     const product = await prisma.product.findUnique({
       where: {
         id: productId
@@ -95,60 +90,31 @@ class productService {
       throw new APIError("Product not found", 404)
     }
 
-    if (body.isPrimary === true) {
-      const data = await prisma.$transaction(async (tx) => {
-        await tx.productImage.updateMany({
-          where: {
-            productId: productId,
-            isPrimary: true
-          },
-          data: {
-            isPrimary: false
-          }
-        })
-
-        return tx.productImage.create({
-          data: {
-            productId: productId,
-            url: body.url,
-            altText: body.altText,
-            displayOrder: body.displayOrder,
-            isPrimary: true
-          }
-        })
-      })
-
-      return data
-    }
-
-    const data = await prisma.productImage.create({
-      data: {
-        productId: productId,
-        url: body.url,
-        altText: body.altText,
-        displayOrder: body.displayOrder,
-        isPrimary: body.isPrimary
-      }
+    const data = await prisma.product.update({
+      where: { id: productId },
+      data: { imageUrl: body.imageUrl }
     })
 
     return data
   }
 
-  deleteProductImage = async (productId: string, imageId: string) => {
-    const image = await prisma.productImage.findFirst({
+  removeProductImage = async (productId: string) => {
+    const product = await prisma.product.findUnique({
       where: {
-        id: imageId,
-        productId: productId
+        id: productId
       }
     })
 
-    if (!image) {
-      throw new APIError("Product image not found", 404)
+    if (!product) {
+      throw new APIError("Product not found", 404)
     }
 
-    await prisma.productImage.delete({
+    await prisma.product.update({
       where: {
-        id: imageId
+        id: productId
+      },
+      data: {
+        imageUrl: null
       }
     })
   }

@@ -6,12 +6,10 @@ export interface IProduct {
   price: number,
   stockQuantity?: number,
   categoryId?: string,
+  imageUrl?: string,
   isActive?: boolean
 }
 
-export interface IProductImage {
-  url: string,
-  altText?: string,
-  displayOrder?: number,
-  isPrimary?: boolean
+export interface IProductImageBody {
+  imageUrl: string
 }

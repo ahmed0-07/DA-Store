@@ -6,17 +6,9 @@ type ICart = Prisma.CartGetPayload<{
   include: {
     cartItems: {
       include: {
-        product: {
-          include: {
-            images: {
-              where: {
-                isPrimary: true,
-              },
-            },
-          },
-        },
-      },
-    },
+        product: true
+      }
+    }
   }
 }>;
 

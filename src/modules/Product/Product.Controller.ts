@@ -41,15 +41,15 @@ export const deleteProduct = async (req: Request, res: Response) => {
   })
 }
 
-export const addProductImage = async (req: Request, res: Response) => {
-  const data = await ProductService.addProductImage(req.params.id as string, req.body)
+export const setProductImage = async (req: Request, res: Response) => {
+  const data = await ProductService.setProductImage(req.params.id as string, req.body)
   res.status(200).json({
     status: "Success",
     data: data
   })
 }
 
-export const deleteProductImage = async (req: Request, res: Response) => {
-  await ProductService.deleteProductImage(req.params.id as string, req.params.imageId as string)
+export const removeProductImage = async (req: Request, res: Response) => {
+  await ProductService.removeProductImage(req.params.id as string)
   res.status(204).send()
 }
