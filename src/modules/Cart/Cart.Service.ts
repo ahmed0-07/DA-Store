@@ -2,7 +2,7 @@ import prisma from "../../lib/db.js";
 import APIError from "../../shared/utils/APIError.js";
 import type { AddItemBody, ICartResult } from "./Cart.Interface.js";
 
-const resolveCart = async (userId: string | undefined, sessionToken: string | undefined): Promise<ICartResult> => {
+export const resolveCart = async (userId: string | undefined, sessionToken?: string | undefined): Promise<ICartResult> => {
   if (userId) {
       let cart = await prisma.cart.findFirst({
         where: { userId },

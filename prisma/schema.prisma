@@ -124,7 +124,6 @@ model Order {
   totalAmount     Decimal       @map("total_amount") @db.Decimal(10, 2)
   shippingAddress Json          @map("shipping_address") @db.JsonB
   
-  // Inlined payment tracking (replaces separate Payment table)
   paymentProvider String?       @map("payment_provider") @db.VarChar(50)
   paymentStatus   PaymentStatus @default(pending) @map("payment_status")
   transactionId   String?       @unique @map("transaction_id") @db.VarChar(255)

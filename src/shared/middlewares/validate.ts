@@ -6,7 +6,8 @@ export const validate = (schema: z.ZodType) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse({
       body: req.body,
-      params: req.params
+      params: req.params,
+      headers: req.headers
     })
 
     if (!result.success) {
