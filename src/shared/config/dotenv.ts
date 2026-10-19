@@ -10,7 +10,10 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   JWT_SECRET: z.string(),
-  STRIPE_SECRET_KEY: z.string()
+  STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET_KEY: z.string(),
+  CLIENT_URL: z.string(),
+  SERVER_URL: z.string()
 })
 
 const res = envSchema.safeParse(process.env)
