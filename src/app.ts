@@ -8,15 +8,30 @@ import cartRouter from './modules/Cart/Cart.Routes.js'
 import orderRouter from './modules/Order/Order.Routes.js'
 import paymentRouter from './modules/Payment/Payment.Router.js'
 import env from './shared/config/dotenv.js'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import cors from "cors"
 import { globalErrorHandler, notFound } from './shared/middlewares/globalError.js'
 
 const app = express()
 
-if (env.NODE_ENV == "development") {
-  app.use(morgan('dev'))
-}
+const limiter = rateLimit({
+  windowMs: 30 * 60 * 1000,
+  limit: 1000,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: "Please try again later",
+  validate: { xForwardedForHeader: false },
+});
 
-app.use(express.json())
+app.use(cors({
+  origin: env.CLIENT_URL,
+}))
+app.use(limiter)
+app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"))
+app.use(helmet())
+
+app.use(express.json({ limit: "100kb" }))
 
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', userRouter)
