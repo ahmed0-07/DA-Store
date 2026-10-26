@@ -34,8 +34,11 @@ export const checkOut = async (req: Request, res: Response) => {
       },
       quantity: item.quantity,
     })),
-    success_url: `${env.SERVER_URL}/api/v1/`,
-    cancel_url: `${env.SERVER_URL}/api/v1/`,
+    success_url: `${env.CLIENT_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${env.CLIENT_URL}/checkout/cancelled`,
+    metadata: {
+      orderId: order.id,
+    },
   })
 
   res.status(302).json({
